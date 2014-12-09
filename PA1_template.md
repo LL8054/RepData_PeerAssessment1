@@ -1,4 +1,9 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
 
 This is Peer Assessment 1 from the Reproducible Research class in the Data Scientist Specialization 
 course.  The data used in this assignment are contained in this repository.  The code used to access
@@ -44,7 +49,7 @@ steps <- ddply(data, .(date), summarize, steps = sum(steps, na.rm=TRUE))
 ggplot(steps, aes(date, steps)) + geom_histogram(stat="identity", fill = "blue") + theme_bw() + labs(title="Total Steps per Day", x = "Date", y = "Total Steps") + theme(title = element_text(face="bold", color="blue"), axis.title.x = element_text(face="bold", color="blue"), axis.title.y = element_text(face="bold", color="blue"))
 ```
 
-![plot of chunk unnamed-chunk-4](./PA1_template_files/figure-html/unnamed-chunk-4.png) 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
 
 <font color=blue> Calculate and report the *mean* and *median* total number of steps taken per day.</font>
 
@@ -71,7 +76,7 @@ intervals <- ddply(data, .(interval), summarize, steps = mean(steps, na.rm=TRUE)
 ggplot(intervals, aes(interval, steps)) + geom_line(stat = "identity", color ="green4") + theme_bw() + labs(title = "Average # Steps Across Each Day Per 5 Minutes", x="5 Minute Intervals", y="Avg # Steps") + theme(title = element_text(face="bold", color="green4"), axis.title.x = element_text(face="bold", color="green4"), axis.title.y = element_text(face="bold", color="green4"))
 ```
 
-![plot of chunk unnamed-chunk-6](./PA1_template_files/figure-html/unnamed-chunk-6.png) 
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
 <font color = green> Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps? </font>
 
@@ -124,7 +129,7 @@ newMedian <- as.integer(newMedian)
 ggplot(newData, aes(date, steps)) + geom_histogram(stat="identity", fill = "purple") + theme_bw() + labs(title="Total Steps per Day with Imputed Data", x = "Date", y = "Total Steps") + theme(title = element_text(face="bold", color="purple"), axis.title.x = element_text(face="bold", color="purple"), axis.title.y = element_text(face="bold", color="purple"))
 ```
 
-![plot of chunk unnamed-chunk-10](./PA1_template_files/figure-html/unnamed-chunk-10.png) 
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png) 
 
 ###**Means**
 
@@ -155,6 +160,6 @@ splitIntervals <- ddply(newData, .(interval, type), summarize, steps = mean(step
 ggplot(splitIntervals, aes(interval, steps, type)) + geom_line(stat = "identity", color ="orange") + theme_bw() + labs(title = "Average # Steps Per 5 Minutes", x="5 Minute Intervals", y="Avg # Steps") + theme(title = element_text(face="bold", color="orange"), axis.title.x = element_text(face="bold", color="orange"), axis.title.y = element_text(face="bold", color="orange")) + facet_wrap( ~type, ncol=1)
 ```
 
-![plot of chunk unnamed-chunk-12](./PA1_template_files/figure-html/unnamed-chunk-12.png) 
+![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png) 
 </font>
     
