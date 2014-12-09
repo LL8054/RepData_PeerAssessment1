@@ -126,19 +126,35 @@ ggplot(newData, aes(date, steps)) + geom_histogram(stat="identity", fill = "purp
 
 ![plot of chunk unnamed-chunk-10](./PA1_template_files/figure-html/unnamed-chunk-10.png) 
 
-##**Means**
+###**Means**
 
 * Original Data: 9354  
 * Imputed Data:  10766  
 
-##**Medians**
+###**Medians**
 
 * Original Data: 10395  
 * Imputed Data:  10766
 
 **The impact of imputing the average number of steps per interval taken over all days in the data set adds to the total number of steps taken.  It may be an obvious consequence, as you can only add a positive number of steps and you can't take away steps (a negative number).  **</font>
 
-### Are there differences in activity patterns between weekdays and weekends?
+###<font color=orange>Are there differences in activity patterns between weekdays and weekends?
 
+Add factor variable of "weekday" or "weekend" to imputed dataset
 
-#Set1: red,blue, green, purple, orange, yellow, brown, pink, grey
+```r
+newData <- mutate(newData, day=weekdays(date))
+newData <- mutate(newData, type=ifelse(day=="Saturday" | day=="Sunday", "Weekend", "Weekday"))
+newData$type <- as.factor(newData$type)
+```
+
+Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
+
+```r
+splitIntervals <- ddply(newData, .(interval, type), summarize, steps = mean(steps))
+ggplot(splitIntervals, aes(interval, steps, type)) + geom_line(stat = "identity", color ="orange") + theme_bw() + labs(title = "Average # Steps Per 5 Minutes", x="5 Minute Intervals", y="Avg # Steps") + theme(title = element_text(face="bold", color="orange"), axis.title.x = element_text(face="bold", color="orange"), axis.title.y = element_text(face="bold", color="orange")) + facet_wrap( ~type, ncol=1)
+```
+
+![plot of chunk unnamed-chunk-12](./PA1_template_files/figure-html/unnamed-chunk-12.png) 
+</font>
+    
