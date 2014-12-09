@@ -44,7 +44,7 @@ steps <- ddply(data, .(date), summarize, steps = sum(steps, na.rm=TRUE))
 ggplot(steps, aes(date, steps)) + geom_histogram(stat="identity", fill = "blue") + theme_bw() + labs(title="Total Steps per Day", x = "Date", y = "Total Steps") + theme(title = element_text(face="bold", color="blue"), axis.title.x = element_text(face="bold", color="blue"), axis.title.y = element_text(face="bold", color="blue"))
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+![plot of chunk unnamed-chunk-4](./PA1_template_files/figure-html/unnamed-chunk-4.png) 
 
 <font color=blue> Calculate and report the *mean* and *median* total number of steps taken per day.</font>
 
@@ -67,11 +67,11 @@ The median number of steps taken each day is 10395.
 <font color = green> Time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis). </font>
 
 ```r
-intervals <- ddply(data, .(interval), summarize, steps = sum(steps, na.rm=TRUE))
+intervals <- ddply(data, .(interval), summarize, steps = mean(steps, na.rm=TRUE))
 ggplot(intervals, aes(interval, steps)) + geom_line(stat = "identity", color ="green4") + theme_bw() + labs(title = "Average # Steps Across Each Day Per 5 Minutes", x="5 Minute Intervals", y="Avg # Steps") + theme(title = element_text(face="bold", color="green4"), axis.title.x = element_text(face="bold", color="green4"), axis.title.y = element_text(face="bold", color="green4"))
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
+![plot of chunk unnamed-chunk-6](./PA1_template_files/figure-html/unnamed-chunk-6.png) 
 
 <font color = green> Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps? </font>
 
@@ -81,9 +81,62 @@ intervals <- arrange(intervals, desc(steps))
 
 **<font color=green>835 is the 5-minute interval which contains the maximum number of steps. </font>**
 
-### Imputing missing values
+### <font color=purple>Imputing missing values
 
+Finding the total number of rows with NAs
 
+```r
+NArows <- apply(data, 1, function(x){any(is.na(x))})
+```
+
+**The total number of rows with NAs is 2304.**
+
+Filling in the missing variables with the mean across all days for that 5-minute interval in order to create a new dataset.
+
+```r
+#Create separate datasets, one with all rows with missing variables and one with all rows of complete variables
+NAset <- data[NArows,]
+completeSet <- data[!NArows,]
+
+#Merge dataset full of NAs with dataset containing average steps for each interval
+new <- merge(NAset, intervals, by="interval")
+
+#Clean up the new dataset then merge with original data to create imputed dataframe
+new <- select(new, steps.y, date, interval)
+colnames(new)[1] <- "steps"
+newData <- rbind(new, completeSet)
+newData <- arrange(newData, date, interval)
+```
+
+Make a histogram of the total number of steps taken each day.  Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+```r
+#Sums total steps per day
+newSteps <- ddply(newData, .(date), summarize, steps = sum(steps, na.rm=TRUE))
+
+#Calculates mean and median
+newMean <- mean(newSteps$steps)
+newMedian <- median(newSteps$steps)
+newMean <- as.integer(newMean)
+newMedian <- as.integer(newMedian)
+
+#Histogram
+ggplot(newData, aes(date, steps)) + geom_histogram(stat="identity", fill = "purple") + theme_bw() + labs(title="Total Steps per Day with Imputed Data", x = "Date", y = "Total Steps") + theme(title = element_text(face="bold", color="purple"), axis.title.x = element_text(face="bold", color="purple"), axis.title.y = element_text(face="bold", color="purple"))
+```
+
+![plot of chunk unnamed-chunk-10](./PA1_template_files/figure-html/unnamed-chunk-10.png) 
+
+##**Means**
+
+* Original Data: 9354  
+* Imputed Data:  10766  
+
+##**Medians**
+
+* Original Data: 10395  
+* Imputed Data:  10766
+
+**The impact of imputing the average number of steps per interval taken over all days in the data set adds to the total number of steps taken.  It may be an obvious consequence, as you can only add a positive number of steps and you can't take away steps (a negative number).  **</font>
 
 ### Are there differences in activity patterns between weekdays and weekends?
 
