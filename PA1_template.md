@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 This is Peer Assessment 1 from the Reproducible Research class in the Data Scientist Specialization 
 course.  The data used in this assignment are contained in this repository.  The code used to access
@@ -49,7 +44,7 @@ steps <- ddply(data, .(date), summarize, steps = sum(steps, na.rm=TRUE))
 ggplot(steps, aes(date, steps)) + geom_histogram(stat="identity", fill = "blue") + theme_bw() + labs(title="Total Steps per Day", x = "Date", y = "Total Steps") + theme(title = element_text(face="bold", color="blue"), axis.title.x = element_text(face="bold", color="blue"), axis.title.y = element_text(face="bold", color="blue"))
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+![plot of chunk unnamed-chunk-4](./PA1_template_files/figure-html/unnamed-chunk-4.png) 
 
 <font color=blue> Calculate and report the *mean* and *median* total number of steps taken per day.</font>
 
@@ -73,10 +68,12 @@ The median number of steps taken each day is 10395.
 
 ```r
 intervals <- ddply(data, .(interval), summarize, steps = mean(steps, na.rm=TRUE))
-ggplot(intervals, aes(interval, steps)) + geom_line(stat = "identity", color ="green4") + theme_bw() + labs(title = "Average # Steps Across Each Day Per 5 Minutes", x="5 Minute Intervals", y="Avg # Steps") + theme(title = element_text(face="bold", color="green4"), axis.title.x = element_text(face="bold", color="green4"), axis.title.y = element_text(face="bold", color="green4"))
+#Add linear column to smooth out non-linear 5-minute interval column
+intervals <- mutate(intervals, x=(1:nrow(intervals)))
+ggplot(intervals, aes(x, steps)) + geom_line(stat = "identity", color ="green4") + theme_bw() + labs(title = "Average # Steps Across Each Day Per 5 Minutes", x="5 Minute Intervals", y="Avg # Steps") + theme(title = element_text(face="bold", color="green4"), axis.title.x = element_text(face="bold", color="green4"), axis.title.y = element_text(face="bold", color="green4")) + scale_x_discrete(breaks=c(intervals[1,3], intervals[73,3], intervals[145,3], intervals[217,3], intervals[288,3]), labels=c(intervals[1,1], intervals[73,1], intervals[145,1], intervals[217,1], intervals[288,1]))
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+![plot of chunk unnamed-chunk-6](./PA1_template_files/figure-html/unnamed-chunk-6.png) 
 
 <font color = green> Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps? </font>
 
@@ -129,7 +126,7 @@ newMedian <- as.integer(newMedian)
 ggplot(newData, aes(date, steps)) + geom_histogram(stat="identity", fill = "purple") + theme_bw() + labs(title="Total Steps per Day with Imputed Data", x = "Date", y = "Total Steps") + theme(title = element_text(face="bold", color="purple"), axis.title.x = element_text(face="bold", color="purple"), axis.title.y = element_text(face="bold", color="purple"))
 ```
 
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png) 
+![plot of chunk unnamed-chunk-10](./PA1_template_files/figure-html/unnamed-chunk-10.png) 
 
 ###**Means**
 
@@ -157,9 +154,11 @@ Make a panel plot containing a time series plot of the 5-minute interval (x-axis
 
 ```r
 splitIntervals <- ddply(newData, .(interval, type), summarize, steps = mean(steps))
-ggplot(splitIntervals, aes(interval, steps, type)) + geom_line(stat = "identity", color ="orange") + theme_bw() + labs(title = "Average # Steps Per 5 Minutes", x="5 Minute Intervals", y="Avg # Steps") + theme(title = element_text(face="bold", color="orange"), axis.title.x = element_text(face="bold", color="orange"), axis.title.y = element_text(face="bold", color="orange")) + facet_wrap( ~type, ncol=1)
+#Add linear column to smooth out non-linear 5-minute intervals column
+splitIntervals <- mutate(splitIntervals, x=(rep(1:(nrow(splitIntervals)/2), each =2)))
+ggplot(splitIntervals, aes(x, steps, type)) + geom_line(stat = "identity", color ="orange") + theme_bw() + labs(title = "Average # Steps Per 5 Minutes", x="5 Minute Intervals", y="Avg # Steps") + theme(title = element_text(face="bold", color="orange"), axis.title.x = element_text(face="bold", color="orange"), axis.title.y = element_text(face="bold", color="orange")) + facet_wrap( ~type, ncol=1) + scale_x_discrete(breaks=c(splitIntervals[1,4], splitIntervals[73,4], splitIntervals[145,4], splitIntervals[217,4], splitIntervals[289,4], splitIntervals[361,4], splitIntervals[433,4], splitIntervals[505,4], splitIntervals[575,4]), labels=c(splitIntervals[1,1], splitIntervals[73,1], splitIntervals[145,1], splitIntervals[217,1], splitIntervals[289,1], splitIntervals[361,1], splitIntervals[433,1], splitIntervals[505,1], splitIntervals[575,1]))
 ```
 
-![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png) 
+![plot of chunk unnamed-chunk-12](./PA1_template_files/figure-html/unnamed-chunk-12.png) 
 </font>
     
