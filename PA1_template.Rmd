@@ -127,7 +127,7 @@ ggplot(newData, aes(date, steps)) + geom_histogram(stat="identity", fill = "purp
 * Original Data: `r median`  
 * Imputed Data:  `r newMedian`
 
-**The impact of imputing the average number of steps per interval taken over all days in the data set adds to the total number of steps taken.  It may be an obvious consequence, as you can only add a positive number of steps and you can't take away steps (a negative number).  **</font>
+**The impact of imputing the average number of steps per interval taken over all days in the data set adds to the total number of steps taken.  It may be an obvious consequence, as you can only add a positive number of steps and you can't take away steps (a negative number).  The Imputed Mean and the Imputed Median are both 10766 because the NAs in the original data set consist of dates for which there is no data at all - that is, each 5-minute interval for those dates is void of data, hence NA.  So if the average 5-minute values are taken across every day that has those values and then imputed into those 5-minute intervals that have NA values, the sum for those imputed days will be equal.  And the average of each day in the data set will be equal.  And there are enough NA days to have them be the median value. **</font>
 
 ###<font color=orange>Are there differences in activity patterns between weekdays and weekends?
 
